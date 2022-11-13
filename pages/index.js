@@ -4,9 +4,25 @@ import styled from "styled-components";
 
 import Menu from "../src/components/Menu";
 import { StyledTimeline } from "../src/components/Timeline";
+import { videoService } from "../src/services/videoService";
 
 function HomePage() {
+  const service = videoService();
   const [valorDoFiltro, setValorDoFiltro] = React.useState("");
+  const [playlists, setPlaylists] = React.useState({});
+
+  React.useEffect(() => {
+    service.getAllVideos().then((dados) => {
+      const newPlaylists = { ...playlists };
+      dados.data.forEach((video) => {
+        if (!newPlaylists[video.playlist]) {
+          newPlaylists[video.playlist] = [];
+        }
+        newPlaylists[video.playlist]?.push(video);
+      });
+      setPlaylists(newPlaylists);
+    });
+  }, []);
 
   return (
     <>
